@@ -8,21 +8,19 @@ function Main({
   setOnEditAvatar,
   setOnDeleteCard,
   onCardClick,
-  userName,
-  setUserName,
-  userDescription,
-  setUserDescription,
-  userAvatar,
-  setUserAvatar,
-  cards,
-  setCards
 }) {
+  const [userName, setUserName] = useState("");
+  const [userDescription, setUserDescription] = useState("");
+  const [userAvatar, setUserAvatar] = useState("");
+  const [cards, setCards] = useState([]);
+
   useEffect(() => {
     api.getInfoProfile(userName, userDescription, userAvatar).then((res) => {
       setUserName(res.name);
       setUserDescription(res.about);
       setUserAvatar(res.avatar);
-    });
+    })
+    .catch((err) => console.log(`Ошибка загрузки данных: ${err}`))
   }, []);
 
   useEffect(() => {
@@ -35,7 +33,8 @@ function Main({
           likes: card.likes,
         }))
       );
-    });
+    })
+    .catch((err) => console.log(`Ошибка загрузки данных: ${err}`))
   }, []);
 
   return (

@@ -1,7 +1,7 @@
 function ImagePopup({ selectedCard, isOpened, isClose }) {
 
   return (
-    <section className={`popup ${isOpened && "popup_opened"}`}>
+    <section className={`popup ${isOpened ? "popup_opened" : ""}`}>
       <div className="popup__body popup__body_dark">
         <div className="popup__content-photo">
           <button

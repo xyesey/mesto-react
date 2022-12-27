@@ -5,7 +5,6 @@ function Card({ name, link, likes, onClick, onCardClick }) {
   }
   
   return (
-    <>
       <article className="element">
         <button
           aria-label="Delete"
@@ -17,7 +16,7 @@ function Card({ name, link, likes, onClick, onCardClick }) {
           src={link}
           onClick={handleClick}
           className="element__image"
-          alt="Photo"
+          alt={name}
         />
         <div className="element__position">
           <h2 className="element__title">{name}</h2>
@@ -27,7 +26,6 @@ function Card({ name, link, likes, onClick, onCardClick }) {
           </div>
         </div>
       </article>
-    </>
   );
 }
 

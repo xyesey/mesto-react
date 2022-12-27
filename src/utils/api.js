@@ -9,7 +9,7 @@ class Api {
       method: newMethod,
       headers: this._headers,
       body: JSON.stringify(newBody),
-    }).then((res) => this._checkRes(res));
+    }).then(this._checkRes);
   }
 
   _checkRes(res) {

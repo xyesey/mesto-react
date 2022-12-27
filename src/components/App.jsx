@@ -6,51 +6,41 @@ import ImagePopup from "./ImagePopup";
 import { useState } from "react";
 
 function App() {
-  const [userName, setUserName] = useState('');
-  const [userDescription, setUserDescription] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
-  const [cards, setCards] = useState([]);
-
-  const [onEditProfile, setEditProfile] = useState(false)
-  const [onAddPlace, setOnAddPlace] = useState(false)
-  const [onEditAvatar, setOnEditAvatar] = useState(false)
-  const [onDeleteCard, setOnDeleteCard] = useState(false)
+  const [isEditProfile, setEditProfile] = useState(false);
+  const [isAddPlace, setOnAddPlace] = useState(false);
+  const [isEditAvatar, setOnEditAvatar] = useState(false);
+  const [isDeleteCard, setOnDeleteCard] = useState(false);
 
   const closeAllPopups = () => {
-    setEditProfile(false)
-    setOnAddPlace(false)
-    setOnEditAvatar(false)
-    setOnDeleteCard(false)
-    setSelectedCard(false)
-  }
+    setEditProfile(false);
+    setOnAddPlace(false);
+    setOnEditAvatar(false);
+    setOnDeleteCard(false);
+    setSelectedCard(false);
+  };
 
   const [selectedCard, setSelectedCard] = useState(false);
 
-  const handleCardClick = (cards) => setSelectedCard(cards)
+  const handleCardClick = (cards) => setSelectedCard(cards);
+  const handleEditProfileClick = () => setEditProfile(true);
+  const handleAddPlaceClick = () => setOnAddPlace(true);
+  const handleEditAvatarClick = () => setOnEditAvatar(true);
 
   return (
     <div>
       <Header />
       <Main
-        setEditProfile={setEditProfile}
-        setOnAddPlace={setOnAddPlace}
-        setOnEditAvatar={setOnEditAvatar}
+        setEditProfile={handleEditProfileClick}
+        setOnAddPlace={handleAddPlaceClick}
+        setOnEditAvatar={handleEditAvatarClick}
         setOnDeleteCard={setOnDeleteCard}
         onCardClick={handleCardClick}
-        userName={userName}
-        setUserName={setUserName}
-        userDescription={userDescription}
-        setUserDescription={setUserDescription}
-        userAvatar={userAvatar}
-        setUserAvatar={setUserAvatar}
-        cards={cards}
-        setCards={setCards}
       />
       <Footer />
 
       <PopupWithForm
         title="Редактировать профиль"
-        isOpened={onEditProfile}
+        isOpened={isEditProfile}
         onClose={closeAllPopups}
         btnText="Изменить"
       >
@@ -82,7 +72,7 @@ function App() {
 
       <PopupWithForm
         title="Новое место"
-        isOpened={onAddPlace}
+        isOpened={isAddPlace}
         onClose={closeAllPopups}
         btnText="Добавить"
       >
@@ -112,7 +102,7 @@ function App() {
 
       <PopupWithForm
         title="Обновить Аватар"
-        isOpened={onEditAvatar}
+        isOpened={isEditAvatar}
         onClose={closeAllPopups}
         btnText="Обновить"
         name="-avatar"
@@ -132,7 +122,7 @@ function App() {
 
       <PopupWithForm
         title="Вы уверены?"
-        isOpened={onDeleteCard}
+        isOpened={isDeleteCard}
         onClose={closeAllPopups}
         btnText="Да"
         name="-delete"
