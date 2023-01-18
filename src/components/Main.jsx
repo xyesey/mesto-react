@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { api } from "../utils/api";
+import { useContext } from "react";
+import { CardContext } from "../contexts/CardContext";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Card from "./Card";
 
 function Main({
@@ -8,34 +9,10 @@ function Main({
   setOnEditAvatar,
   setOnDeleteCard,
   onCardClick,
+  onCardLike,
 }) {
-  const [userName, setUserName] = useState("");
-  const [userDescription, setUserDescription] = useState("");
-  const [userAvatar, setUserAvatar] = useState("");
-  const [cards, setCards] = useState([]);
-
-  useEffect(() => {
-    api.getInfoProfile(userName, userDescription, userAvatar).then((res) => {
-      setUserName(res.name);
-      setUserDescription(res.about);
-      setUserAvatar(res.avatar);
-    })
-    .catch((err) => console.log(`Ошибка загрузки данных: ${err}`))
-  }, []);
-
-  useEffect(() => {
-    api.getInitialCards().then((data) => {
-      setCards(
-        data.map((card) => ({
-          id: card._id,
-          name: card.name,
-          link: card.link,
-          likes: card.likes,
-        }))
-      );
-    })
-    .catch((err) => console.log(`Ошибка загрузки данных: ${err}`))
-  }, []);
+  const currentUser = useContext(CurrentUserContext);
+  const cards = useContext(CardContext);
 
   return (
     <main>
@@ -43,14 +20,14 @@ function Main({
         <div className="profile__avatar-container">
           <img
             onClick={() => setOnEditAvatar(true)}
-            src={userAvatar}
+            src={currentUser.avatar}
             className="profile__avatar"
             alt="Avatar"
           />
         </div>
         <div className="profile__info">
           <div className="profile__info-edit">
-            <h1 className="profile__info-title">{userName}</h1>
+            <h1 className="profile__info-title">{currentUser.name}</h1>
             <button
               onClick={() => setEditProfile(true)}
               className="profile__edit-button"
@@ -58,7 +35,7 @@ function Main({
               type="button"
             ></button>
           </div>
-          <p className="profile__info-subtitle">{userDescription}</p>
+          <p className="profile__info-subtitle">{currentUser.about}</p>
         </div>
         <button
           onClick={() => setOnAddPlace(true)}
@@ -69,13 +46,15 @@ function Main({
       </section>
 
       <section className="elements">
-        {cards.map(({ id, ...card }) => {
+        {cards.map(({ _id, ...card }) => {
           return (
             <Card
-              key={`cardID ${id}`}
+              key={`cardID ${_id}`}
               {...card}
               onClick={() => setOnDeleteCard(true)}
               onCardClick={onCardClick}
+              onCardLike={onCardLike}
+              id={_id}
             />
           );
         })}

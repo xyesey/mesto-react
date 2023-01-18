@@ -44,6 +44,14 @@ class Api {
     return this._fetch(`/cards/${id}`, "DELETE");
   }
 
+  toggleLike(id, isLiked) {
+    if(isLiked) {
+      return (this.likeInactive(id))
+    } else {
+      return this.likeActive(id)
+    }
+  }
+
   likeActive(id) {
     return this._fetch(`/cards/${id}/likes`, "PUT");
   }
