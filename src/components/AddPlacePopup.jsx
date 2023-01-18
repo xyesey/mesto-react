@@ -5,39 +5,33 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
   const {
     register,
     formState: { errors, isValid },
-    getValues,
+    handleSubmit,
   } = useForm({
     mode: "onChange",
   });
 
-  const nameValue = getValues("placeName");
-  const urlValue = getValues("url");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
+    console.log(data);
 
     onAddCard({
-      name: nameValue,
-      link: urlValue,
+      name: data.placeName,
+      link: data.url,
     });
-    console.log(urlValue)
+
+    onClose();
   };
-  
 
   return (
     <PopupWithForm
       title="Новое место"
       isOpened={isOpen}
       onClose={onClose}
-      onChange={(e) => handleSubmit(e)}
+      onSubmit={handleSubmit(onSubmit)}
       btnText="Добавить"
     >
       <input
-        // required
         type="text"
         className={`popup__input`}
-        // minLength="2"
-        // maxLength="40"
         placeholder="Название"
         {...register("placeName", {
           required: "Поле обязательно к заполнению.",
@@ -49,11 +43,8 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
       ></input>
       <span className="popup__error_visible">{errors?.placeName?.message}</span>
       <input
-        // required
-        type="text"
+        type="url"
         className={`popup__input`}
-        // minLength="2"
-        // maxLength="200"
         placeholder="Ссылка на картинку"
         {...register("url", {
           required: "Поле обязательно к заполнению.",

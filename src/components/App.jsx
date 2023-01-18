@@ -1,18 +1,15 @@
-import Footer from "./Footer";
-import Header from "./Header";
-import Main from "./Main";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
-
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-
 import { useEffect, useState } from "react";
 import { api } from "../utils/api";
 import { CardContext } from "../contexts/CardContext";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+
+import Footer from "./Footer";
+import Header from "./Header";
+import Main from "./Main";
+import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import { set } from "react-hook-form";
 import DeleteCardPopup from "./DeleteCardPopup";
 
 function App() {
@@ -20,9 +17,16 @@ function App() {
   const [isAddPlace, setOnAddPlace] = useState(false);
   const [isEditAvatar, setOnEditAvatar] = useState(false);
   const [isDeleteCard, setOnDeleteCard] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(false);
 
   const [currentUser, setCurrentUser] = useState("");
   const [cards, setCards] = useState([]);
+
+  const handleDeleteClick = (cards) => setOnDeleteCard(cards);
+  const handleCardClick = (cards) => setSelectedCard(cards);
+  const handleEditProfileClick = () => setEditProfile(true);
+  const handleAddPlaceClick = () => setOnAddPlace(true);
+  const handleEditAvatarClick = () => setOnEditAvatar(true);
 
   useEffect(() => {
     Promise.all([api.getInitialCards(), api.getInfoProfile(currentUser)])
@@ -38,29 +42,6 @@ function App() {
       .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
   }, []);
 
-  // useEffect(() => {
-  //   api
-  //     .getInitialCards()
-  //     .then((data) => {
-  //       setCards([...cards, ...data]);
-  //     })
-  //     .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
-  // }, []);
-
-  // useEffect(() => {
-  //   api
-  //     .getInfoProfile(currentUser)
-  //     .then((res) =>
-  //       setCurrentUser({
-  //         name: res.name,
-  //         about: res.about,
-  //         avatar: res.avatar,
-  //         id: res._id,
-  //       })
-  //     )
-  //     .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
-  // }, []);
-
   const closeAllPopups = () => {
     setEditProfile(false);
     setOnAddPlace(false);
@@ -68,13 +49,6 @@ function App() {
     setOnDeleteCard(false);
     setSelectedCard(false);
   };
-
-  const [selectedCard, setSelectedCard] = useState(false);
-
-  const handleCardClick = (cards) => setSelectedCard(cards);
-  const handleEditProfileClick = () => setEditProfile(true);
-  const handleAddPlaceClick = () => setOnAddPlace(true);
-  const handleEditAvatarClick = () => setOnEditAvatar(true);
 
   const handleUpdateUser = (data) => {
     api
@@ -88,7 +62,6 @@ function App() {
   };
 
   const handleAddPlaceSubmit = (data) => {
-    console.log(data);
     api
       .postedCard({ name: data.name, link: data.link })
       .then((data) => setCards([data, ...cards]))
@@ -108,12 +81,12 @@ function App() {
       .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
   };
 
-  const handleCardDelete = (card) => {
-    console.log(card);
+  const handleCardDelete = (cardID) => {
+    console.log(cardID);
     api
-      .deleteCard(card._id)
+      .deleteCard(cardID)
       .then(() => {
-        setCards((state) => state.filter((c) => c._id !== card.id));
+        setCards((state) => state.filter((c) => c._id !== cardID));
       })
       .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
   };
@@ -127,9 +100,9 @@ function App() {
             setEditProfile={handleEditProfileClick}
             setOnAddPlace={handleAddPlaceClick}
             setOnEditAvatar={handleEditAvatarClick}
-            setOnDeleteCard={setOnDeleteCard}
             onCardClick={handleCardClick}
             onCardLike={handleCardLike}
+            onDeleteClick={handleDeleteClick}
           />
 
           <EditProfilePopup
@@ -154,6 +127,7 @@ function App() {
             isOpen={isDeleteCard}
             onClose={closeAllPopups}
             onDeleteCard={handleCardDelete}
+            isDeleteCard={isDeleteCard}
           />
         </CardContext.Provider>
 

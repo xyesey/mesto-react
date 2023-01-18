@@ -1,42 +1,32 @@
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import PopupWithForm from "./PopupWithForm";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-  // const inputRef = useRef(null);
-
   const {
     register,
     formState: { errors },
-    getValues,
+    handleSubmit,
   } = useForm({ mode: "onChange" });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const onSubmit = (data) => {
     onUpdateAvatar({
-      avatar: urlValue,
+      avatar: data.url,
     });
-    console.log(urlValue)
+    onClose();
   };
-
-  const urlValue = getValues("url");
 
   return (
     <PopupWithForm
       title="Обновить Аватар"
       isOpened={isOpen}
       onClose={onClose}
-      onChange={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       btnText="Обновить"
       name="-avatar"
     >
       <input
-        // required
-        type="text"
+        type="url"
         className={`popup__input`}
-        // minLength="2"
-        // maxLength="200"
         placeholder="Ссылка на картинку"
         {...register("url", {
           required: "Поле обязательно к заполнению.",

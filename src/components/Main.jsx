@@ -7,9 +7,9 @@ function Main({
   setEditProfile,
   setOnAddPlace,
   setOnEditAvatar,
-  setOnDeleteCard,
   onCardClick,
   onCardLike,
+  onDeleteClick,
 }) {
   const currentUser = useContext(CurrentUserContext);
   const cards = useContext(CardContext);
@@ -51,9 +51,9 @@ function Main({
             <Card
               key={`cardID ${_id}`}
               {...card}
-              onClick={() => setOnDeleteCard(true)}
               onCardClick={onCardClick}
               onCardLike={onCardLike}
+              onDeleteClick={onDeleteClick}
               id={_id}
             />
           );

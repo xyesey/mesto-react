@@ -1,5 +1,4 @@
 import useInput from "../hooks/useInput";
-
 import PopupWithForm from "./PopupWithForm";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
@@ -10,6 +9,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       name: name.value,
       about: about.value,
     });
+    onClose();
   };
 
   const name = useInput("", { isEmpty: true, minLength: 3 });
@@ -20,7 +20,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       title="Редактировать профиль"
       isOpened={isOpen}
       onClose={onClose}
-      onChange={(e) => handleSubmit(e)}
+      onSubmit={handleSubmit}
       btnText="Изменить"
     >
       <label>

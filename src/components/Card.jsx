@@ -7,9 +7,9 @@ function Card({
   likes,
   owner,
   id,
-  onClick,
   onCardClick,
   onCardLike,
+  onDeleteClick,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -21,6 +21,10 @@ function Card({
 
   const handleClick = () => {
     onCardClick({ link, name });
+    console.log({ link, name });
+  };
+  const handleDeleteCard = () => {
+    onDeleteClick(id);
   };
 
   return (
@@ -30,7 +34,7 @@ function Card({
           aria-label="Delete"
           type="button"
           className="element__btn-delete"
-          onClick={onClick}
+          onClick={handleDeleteCard}
         ></button>
       )}
       <img
