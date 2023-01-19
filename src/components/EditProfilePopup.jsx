@@ -1,7 +1,11 @@
+import { useContext } from "react";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import useInput from "../hooks/useInput";
 import PopupWithForm from "./PopupWithForm";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
+  const userData = useContext(CurrentUserContext);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -12,8 +16,9 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     onClose();
   };
 
-  const name = useInput("", { isEmpty: true, minLength: 3 });
-  const about = useInput("", { isEmpty: true, minLength: 4 });
+  const name = useInput(`${userData.name}`, { isEmpty: true, minLength: 3 });
+  const about = useInput(`${userData.about}`, { isEmpty: true, minLength: 4 });
+  console.log(name);
 
   return (
     <PopupWithForm

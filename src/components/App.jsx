@@ -19,7 +19,7 @@ function App() {
   const [isDeleteCard, setOnDeleteCard] = useState(false);
   const [selectedCard, setSelectedCard] = useState(false);
 
-  const [currentUser, setCurrentUser] = useState("");
+  const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
   const handleDeleteClick = (cards) => setOnDeleteCard(cards);

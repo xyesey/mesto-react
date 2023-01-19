@@ -1,12 +1,23 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import PopupWithForm from "./PopupWithForm";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
   const {
     register,
-    formState: { errors },
+    formState,
+    formState: { errors, isSubmitSuccessful },
     handleSubmit,
+    reset,
   } = useForm({ mode: "onChange" });
+
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({
+        url: "",
+      });
+    }
+  }, [formState, reset]);
 
   const onSubmit = (data) => {
     onUpdateAvatar({

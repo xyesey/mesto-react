@@ -1,14 +1,26 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import PopupWithForm from "./PopupWithForm";
 
 function AddPlacePopup({ isOpen, onClose, onAddCard }) {
   const {
     register,
-    formState: { errors, isValid },
+    formState,
+    formState: { errors, isValid, isSubmitSuccessful },
     handleSubmit,
+    reset
   } = useForm({
     mode: "onChange",
   });
+
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({
+        placeName: "",
+        url: ""
+      })
+    }
+  }, [formState, reset])
 
   const onSubmit = (data) => {
     console.log(data);
