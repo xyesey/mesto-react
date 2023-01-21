@@ -12,12 +12,10 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
   } = useForm({ mode: "onChange" });
 
   useEffect(() => {
-    if (formState.isSubmitSuccessful) {
-      reset({
-        url: "",
-      });
-    }
-  }, [formState, reset]);
+    reset({
+      url: "",
+    });
+  }, [isOpen]);
 
   const onSubmit = (data) => {
     onUpdateAvatar({

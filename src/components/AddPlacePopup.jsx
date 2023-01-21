@@ -14,13 +14,11 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
   });
 
   useEffect(() => {
-    if (formState.isSubmitSuccessful) {
-      reset({
-        placeName: "",
-        url: ""
-      })
-    }
-  }, [formState, reset])
+    reset({
+      placeName: "",
+      url: ""
+    })
+  }, [isOpen])
 
   const onSubmit = (data) => {
     console.log(data);

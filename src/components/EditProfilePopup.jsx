@@ -18,7 +18,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 
   const name = useInput(`${userData.name}`, { isEmpty: true, minLength: 3 });
   const about = useInput(`${userData.about}`, { isEmpty: true, minLength: 4 });
-  console.log(name);
 
   return (
     <PopupWithForm
