@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import { CardContext } from "../contexts/CardContext";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import * as auth from "./Auth/Auth";
 
 import Footer from "./Footer";
 import Header from "./Header";
@@ -11,8 +13,19 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import DeleteCardPopup from "./DeleteCardPopup";
+import Login from "./Auth/Login";
+import Register from "./Auth/Register";
+import ProtectRoute from "./ProtectRoute";
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({
+    email: "",
+  });
+  const [userEmail, setUserEmail] = useState("");
+  const [isSuccessModal, setIsSuccessModal] = useState(false);
+  const [isErrorModal, setIsErrorModal] = useState(false);
+
   const [isEditProfile, setEditProfile] = useState(false);
   const [isAddPlace, setOnAddPlace] = useState(false);
   const [isEditAvatar, setOnEditAvatar] = useState(false);
@@ -27,6 +40,65 @@ function App() {
   const handleEditProfileClick = () => setEditProfile(true);
   const handleAddPlaceClick = () => setOnAddPlace(true);
   const handleEditAvatarClick = () => setOnEditAvatar(true);
+
+  const navigate = useNavigate();
+
+  const handleLogin = (userData) => {
+    setLoggedIn(true);
+    setUserData(userData);
+  };
+
+  const closeModalAuth = () => {
+    if (isSuccessModal) {
+      setIsSuccessModal(false);
+      navigate("/sign-in", { replace: true });
+    } else {
+      setIsErrorModal(false);
+    }
+  };
+
+  const handleSignUp = (password, email) => {
+    auth
+      .register(password, email)
+      .then((res) => {
+        setIsSuccessModal(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsErrorModal(true);
+      });
+  };
+
+  const handleSignIn = (formValue) => {
+    auth
+      .authorize(formValue.password, formValue.email)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("jwt", res.token);
+          handleLogin({ email: res.email });
+          navigate("/mesto-react", { replace: true });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsErrorModal(true);
+      });
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      auth.getConnect(token).then((res) => {
+        if (res) {
+          const userData = {
+            email: setUserEmail(res.data.email),
+          };
+          handleLogin(userData);
+          navigate("/mesto-react");
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     Promise.all([api.getInitialCards(), api.getInfoProfile(currentUser)])
@@ -48,6 +120,7 @@ function App() {
     setOnEditAvatar(false);
     setOnDeleteCard(false);
     setSelectedCard(false);
+    setIsSuccessModal(false);
   };
 
   const handleUpdateUser = (data) => {
@@ -93,17 +166,58 @@ function App() {
 
   return (
     <div>
-      <Header />
+      <Header currentUser={userEmail} loggedIn={loggedIn} />
       <CurrentUserContext.Provider value={currentUser}>
         <CardContext.Provider value={cards}>
-          <Main
-            setEditProfile={handleEditProfileClick}
-            setOnAddPlace={handleAddPlaceClick}
-            setOnEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onDeleteClick={handleDeleteClick}
-          />
+          <Routes>
+            <Route
+              path="/mesto-react"
+              element={
+                <ProtectRoute loggedIn={loggedIn}>
+                  <Main
+                    setEditProfile={handleEditProfileClick}
+                    setOnAddPlace={handleAddPlaceClick}
+                    setOnEditAvatar={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    onCardLike={handleCardLike}
+                    onDeleteClick={handleDeleteClick}
+                  />
+                </ProtectRoute>
+              }
+            />
+            <Route
+              path="/sign-in"
+              element={
+                <Login
+                  handleSignIn={handleSignIn}
+                  errorModal={isErrorModal}
+                  onClose={closeModalAuth}
+                />
+              }
+            />
+            <Route
+              path="/sign-up"
+              element={
+                <Register
+                  handleSignUp={handleSignUp}
+                  successModal={isSuccessModal}
+                  errorModal={isErrorModal}
+                  setModal={setIsSuccessModal}
+                  onClose={closeModalAuth}
+                />
+              }
+            />
+            <Route
+              path="/"
+              element={
+                loggedIn ? (
+                  <Navigate to="/mesto-react" />
+                ) : (
+                  <Navigate to="/sign-in" />
+                )
+              }
+            />
+          </Routes>
 
           <EditProfilePopup
             isOpen={isEditProfile}

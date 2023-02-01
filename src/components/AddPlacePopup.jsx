@@ -5,8 +5,7 @@ import PopupWithForm from "./PopupWithForm";
 function AddPlacePopup({ isOpen, onClose, onAddCard }) {
   const {
     register,
-    formState,
-    formState: { errors, isValid, isSubmitSuccessful },
+    formState: { errors, },
     handleSubmit,
     reset
   } = useForm({
